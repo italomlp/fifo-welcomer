@@ -29,30 +29,38 @@ client.on("messageCreate", (message) => {
     const user = message.guild.members.cache.get(process.env.FIFO_ID);
     const { channel } = user.voice;
 
-    if (!channel) {
-      return message.channel.send("Fifo is not in a voice channel.");
+    const role = message.guild.roles.cache.get(process.env.TECH_LEAD_ROLE_ID);
+    if (role.members.map((m) => m.id).includes(message.author.id)) {
+      if (!channel) {
+        return message.channel.send("Fifo is not in a voice channel.");
+      }
+
+      message.channel.send("Fifo will be greeted!");
+
+      const connection = joinVoiceChannel({
+        channelId: channel.id,
+        guildId: channel.guild.id,
+        adapterCreator: channel.guild.voiceAdapterCreator,
+      });
+
+      const player = createAudioPlayer();
+      const resource = createAudioResource(
+        "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&textlen=7&q=oi%20fifo&tl=pt-br&ttsspeed=1"
+      );
+
+      const subscription = connection.subscribe(player);
+      player.play(resource);
+
+      player.on(AudioPlayerStatus.Idle, () => {
+        subscription.unsubscribe();
+        connection.disconnect();
+      });
+      return;
     }
 
-    message.channel.send("Fifo will be greeted!");
-
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: channel.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    });
-
-    const player = createAudioPlayer();
-    const resource = createAudioResource(
-      "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&textlen=7&q=oi%20fifo&tl=pt-br&ttsspeed=1"
+    return message.channel.send(
+      "You do not have permission to use this command."
     );
-
-    const subscription = connection.subscribe(player);
-    player.play(resource);
-
-    player.on(AudioPlayerStatus.Idle, () => {
-      subscription.unsubscribe();
-      connection.disconnect();
-    });
   }
 });
 
