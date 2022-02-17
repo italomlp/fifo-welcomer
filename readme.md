@@ -4,6 +4,6 @@ TODO:
 
 - [x] Create the basic structure
 - [ ] Deploy
-- [ ] Listen to a command !hi-fifo
-- [ ] Identify if Fifo is in a voice channel
-- [ ] Play a sound for "Oi Fifo" if Fifo is in a voice channel
+- [x] Listen to a command !oififo
+- [x] Identify if Fifo is in a voice channel
+- [x] Play a sound for "Oi Fifo" if Fifo is in a voice channel
