@@ -27,7 +27,7 @@ client.on("messageCreate", (message) => {
 
   if (message.content === `${prefix}oififo`) {
     const user = message.guild.members.cache.get(process.env.FIFO_ID);
-    const { channel } = user.voice;
+    const { channel } = user?.voice ?? {};
 
     const role = message.guild.roles.cache.get(process.env.TECH_LEAD_ROLE_ID);
     if (role.members.map((m) => m.id).includes(message.author.id)) {
